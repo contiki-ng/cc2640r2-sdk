@@ -1,12 +1,10 @@
 /******************************************************************************
 *  Filename:       cpu.h
-*  Revised:        2017-08-21 13:20:52 +0200 (Mon, 21 Aug 2017)
-*  Revision:       49618
 *
 *  Description:    Defines and prototypes for the CPU instruction wrapper
 *                  functions.
 *
-*  Copyright (c) 2015 - 2017, Texas Instruments Incorporated
+*  Copyright (c) 2015 - 2022, Texas Instruments Incorporated
 *  All rights reserved.
 *
 *  Redistribution and use in source and binary forms, with or without
@@ -145,7 +143,7 @@ extern uint32_t CPUbasepriGet(void);
 
 //*****************************************************************************
 //
-//! \brief Provide a small delay using a simple loop counter.
+//! \brief Provide a small non-zero delay using a simple loop counter.
 //!
 //! This function provides means for generating a constant length delay. It
 //! is written in assembly to keep the delay consistent across tool chains,
@@ -171,7 +169,7 @@ extern uint32_t CPUbasepriGet(void);
 //! Example: 250 us delay with code in flash and with cache and prefetch enabled:
 //! - ui32Count = 250 * 48 / 4 = 3000
 //!
-//! \param ui32Count is the number of delay loop iterations to perform.
+//! \param ui32Count is the number of delay loop iterations to perform. Number must be greater than zero.
 //!
 //! \return None
 //
@@ -319,7 +317,6 @@ CPUsev(void)
 }
 #endif
 
-
 //*****************************************************************************
 //
 //! \brief Update the interrupt priority disable level.
@@ -353,7 +350,7 @@ CPUbasepriSet(uint32_t ui32NewBasepri)
     msr     BASEPRI, r0;
     bx      lr
 }
-#elif defined(__TI_COMPILER_VERSION__)
+#elif (defined(__TI_COMPILER_VERSION__) || defined(__clang__))
 __STATIC_INLINE void
 CPUbasepriSet(uint32_t ui32NewBasepri)
 {
